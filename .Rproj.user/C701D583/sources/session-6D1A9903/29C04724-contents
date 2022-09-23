@@ -1,0 +1,14 @@
+
+
+# ID  ---------------------------------------------------------------------
+
+##Lenguajes de programación estadistica
+##Profesor: Christian Sucuzhanay Arevalo
+##Alumno: Alba Mª Laguna Moraleda, EXP:21017327
+## HANDS ON 01
+
+
+
+# LOADING LIBS ------------------------------------------------------------
+
+install.packages("tidyverse","httr","janitor")
