@@ -55,9 +55,11 @@ which
 install.packages("tidyverse")
 install.packages("packman")
 install.packages("httr") 
+install.packages('janitor')
+install.packages('jsonlite')
 install.packages(c("tidyverse","httr","janitor","jsonlite"))
 
-library(tidyverse,httr)
+library(tidyverse)
 
 
 # BASIC OPERATORS ---------------------------------------------------------
@@ -69,15 +71,18 @@ url_<-"https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosC
 gln<-httr::GET("https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/")
 xml2::read_xml(gln$content)
 glimpse(gln)
-
+# READING && WRITTING -----------------------------------------------------
 f_raw<-jsonlite::fromJSON(url_)
 
 gln_source<-f_raw$ListaEESSPrecio %>% glimpse()
 
-janitor::clean_names(gln_source) %>% glimpse()
+df2<-gln_source %>% janitor::clean_names() %>% type_convert(locale=locale(decimal_mark=","))
 
-type.convert(gln_source,locale= )
+#CREATING A NEW VARIABLES--------------------------------------------------
+#Clasificamos por gasolineras baratas y no baratas 
+df2%>%mutate(expensive=rotulo %in%c("CEPSA","REPSOL","BP","SHELL"))%>%view()
+df_low<-df2%>%mutate(expensive=!rotulo %in%c("CEPSA","REPSOL","BP","SHELL")) #no caras
 
-# READING && WRITTING -----------------------------------------------------
+#Calcular precio medio de la gasolina en las CCAA---------------------------
+dfA22017327<-df_low%>%select(precio_gasoleo_a,idccaa,rotulo,expensive)%>%drop_na()%>%group_by(idccaa,expensive)%>%summarise(mean(precio_gasoleo_a))%>%data.frame("Comunidades"= c("Andalucia","Aragón","Principado de Asturias","Islas Baleares","Canarias","Cantabria","CastillaLeon","CastillaLaMancha","Cataluña","ComunidadValenciana","Extremadura","Galicia","Madrid","Murcia","Navarra","Paisvasco","Rioja","Ceuta","Melilla"))%>%view()
 
-#readr::

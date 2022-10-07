@@ -3,3 +3,7 @@ def fib(n)
 		return
 	else:
 		return (fib(n-1)+fib(n-2))
+
+
+
+hdjasñfj`0awifjad+fjad
